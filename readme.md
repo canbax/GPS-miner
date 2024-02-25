@@ -44,3 +44,7 @@ run `npm run x` command to generate "GPS-data.json" file.
 There are two data sources it use
 
 `nvm use 20.11.0` to use the right Node.js version
+
+
+
+This site or product includes IP2Location LITE data available from <a href="https://lite.ip2location.com">https://lite.ip2location.com</a>.
