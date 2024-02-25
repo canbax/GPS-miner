@@ -8,7 +8,7 @@ import {
 
 let data: Record<CountryCode, CountryData> = {};
 
-const GENERATED_FILE = "./countryData.json";
+const GENERATED_FILE = "./GPS-data.json";
 const IP2LOCATION_DATA_FILE = "./data/IP2LOCATION-LITE-DB5.CSV";
 const DR5H_DATA_FILE = "./data/cities.csv";
 
@@ -24,6 +24,4 @@ async function main() {
 
   printStatisticsInGeneratedFile(GENERATED_FILE);
 }
-console.log('asd');
 main();
-console.log('asd2');

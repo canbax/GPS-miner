@@ -10,8 +10,7 @@
   "scripts": {
     "test": "test",
     "tsc": "tsc",
-    "x": "tsc src/main.ts && node src/main.js && rm src/main.js",
-    "n20": "nvm use 20.11.0"
+    "x": "tsc src/main.ts && node src/main.js && rm src/*.js"
   },
   "keywords": [
     "script",
