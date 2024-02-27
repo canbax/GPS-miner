@@ -1,12 +1,18 @@
 import { exec } from "child_process";
-import { CountryCode, CountryData, RegionData } from "./types";
+import {
+  CountryCode,
+  CountryData,
+  RegionData,
+  SupportedLanguage,
+} from "./types.js";
 import { SingleBar, Presets } from "cli-progress";
-import { createReadStream, writeFile, readFileSync } from "fs";
+import { createReadStream, writeFile, writeFileSync, readFileSync } from "fs";
 import { parse } from "fast-csv";
+import { WBK } from "wikibase-sdk";
 import {
   CITY_NAMES_EN_TO_TR,
   convertEnglishSubPlaceNameToTurkish,
-} from "./turkish-character-converter";
+} from "./turkish-character-converter.js";
 
 function getNumberOfLinesInFile(fileName: string): Promise<number> {
   return new Promise((resolve, reject) => {
@@ -31,7 +37,7 @@ function getNumberOfLinesInFile(fileName: string): Promise<number> {
 
 export async function processIP2LocationData(
   data: Record<CountryCode, CountryData>,
-  generatedFile: string = "countryData.json",
+  generatedFile: string = "GPS-data.json",
   sourcefilePath: string = "./data/IP2LOCATION-LITE-DB5.IPV6.CSV"
 ) {
   return new Promise(async (resolve) => {
@@ -45,8 +51,8 @@ export async function processIP2LocationData(
 
     createReadStream(sourcefilePath)
       .pipe(parse({ headers: false }))
-      .on("error", (error) => console.error(error))
-      .on("data", (row) => {
+      .on("error", (error: any) => console.error(error))
+      .on("data", (row: any) => {
         bar1.increment(1);
         const countryCode = row[2];
         const countryName = row[3];
@@ -117,7 +123,7 @@ function hasTheSameCoordinate(region: RegionData, coords: [number, number]) {
 
 export async function processDr5hnData(
   data: Record<CountryCode, CountryData>,
-  generatedFile: string = "countryData.json",
+  generatedFile: string = "GPS-data.json",
   sourcefilePath: string = "./data/cities.CSV"
 ) {
   return new Promise(async (resolve) => {
@@ -132,8 +138,8 @@ export async function processDr5hnData(
     let isHeaderLine = true;
     createReadStream(sourcefilePath)
       .pipe(parse({ headers: false }))
-      .on("error", (error) => console.error(error))
-      .on("data", (row) => {
+      .on("error", (error: any) => console.error(error))
+      .on("data", (row: any) => {
         bar1.increment(1);
 
         if (isHeaderLine) {
@@ -199,4 +205,88 @@ export function printStatisticsInGeneratedFile(fileName: string) {
   console.log("country count ", Object.keys(data).length);
   console.log("region count: ", regCount);
   console.log("city count: ", cityCount);
+}
+
+export async function httpGet(url: string) {
+  try {
+    const result = await fetch(url);
+    return await result.json();
+  } catch (error) {
+    return "error: " + error;
+  }
+}
+
+const wdk = WBK({
+  instance: "https://www.wikidata.org",
+  sparqlEndpoint: "https://query.wikidata.org/sparql",
+});
+
+export const languages: SupportedLanguage[] = [
+  "ar",
+  "az",
+  "de",
+  "es",
+  "fa",
+  "fr",
+  "id",
+  "it",
+  "kk",
+  "ko",
+  "ky",
+  "ms",
+  "ru",
+  "tr",
+  "zh",
+];
+
+export async function translateName(
+  name: string,
+  missingResults: any,
+  isPrint = false
+) {
+  const selectExpression = languages.map((x) => "?" + x).join(" ");
+  const languageFilter = languages
+    .map(
+      (x) => `OPTIONAL { ?item rdfs:label ?${x}. FILTER(LANG(?${x}) = "${x}") }`
+    )
+    .join("\n");
+
+  const query = `
+  SELECT DISTINCT ?item ?itemLabel ${selectExpression}
+  WHERE {
+    ?item rdfs:label "${name}"@en.
+    ${languageFilter}
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+  }
+  `;
+  const url = wdk.sparqlQuery(query);
+  const data = await httpGet(url);
+  const result: any = {};
+  for (const lang of languages) {
+    let maximumResult: any = {};
+    for (let i of data.results.bindings) {
+      if (Object.keys(i).length > Object.keys(maximumResult).length) {
+        maximumResult = i;
+      }
+    }
+    if (maximumResult && maximumResult[lang]) {
+      result[lang] = maximumResult[lang].value;
+    }
+  }
+  if (Object.keys(result).length === 0) {
+    missingResults[name] = true;
+  }
+  if (isPrint) {
+    console.log("result: ", result, "missing: ", missingResults);
+  }
+  return result;
+}
+
+export function writeTranslationsToFiles(
+  translations: Record<string, Record<CountryCode, CountryData>>
+) {
+  for (let langCode in translations) {
+    const fileName = "./generated-data/GPS-data-" + langCode + ".json";
+    writeFileSync(fileName, JSON.stringify(translations[langCode]));
+  }
 }

@@ -1,10 +1,10 @@
 import { readFileSync } from "fs";
-import { CountryCode, CountryData } from "./types";
+import { CountryCode, CountryData } from "./types.js";
 import {
   printStatisticsInGeneratedFile,
   processDr5hnData,
   processIP2LocationData,
-} from "./util";
+} from "./util.js";
 
 let data: Record<CountryCode, CountryData> = {};
 
@@ -12,7 +12,7 @@ const GENERATED_FILE = "./GPS-data.json";
 const IP2LOCATION_DATA_FILE = "./data/IP2LOCATION-LITE-DB5.CSV";
 const DR5H_DATA_FILE = "./data/cities.csv";
 
-async function main() {
+async function generateEnglishData() {
   try {
     data = JSON.parse(readFileSync(GENERATED_FILE, "utf8"));
   } catch (err) {
@@ -24,4 +24,4 @@ async function main() {
 
   printStatisticsInGeneratedFile(GENERATED_FILE);
 }
-main();
+generateEnglishData();

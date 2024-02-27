@@ -268,3 +268,21 @@ export type CountryCode =
   | "ZM"
   | "ZW"
   | string;
+
+export type SupportedLanguage =
+  | "ar"
+  | "az"
+  | "de"
+  | "es"
+  | "fa"
+  | "fr"
+  | "id"
+  | "it"
+  | "kk"
+  | "ko"
+  | "ky"
+  | "ms"
+  | "ru"
+  | "tr"
+  | "zh"
+  | string;

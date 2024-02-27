@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "A script to scrape GPS data of cities and translates to different languages using wikidata",
   "main": "index.js",
+  "type": "module",
   "engines": {
     "node": "20.x",
     "npm": "10.x"
@@ -10,7 +11,10 @@
   "scripts": {
     "test": "jest",
     "tsc": "tsc",
-    "x": "tsc src/main.ts && node src/main.js && rm src/*.js"
+    "mine-GPS": "tsc && node src/mine-GPS.js && rm src/*.js",
+    "i18n-1": "tsc && node src/i18n-1.js && rm src/*.js",
+    "i18n-2": "tsc && node src/i18n-2.js && rm src/*.js",
+    "del-js": "rm src/*.js"
   },
   "keywords": [
     "script",
@@ -33,6 +37,7 @@
   },
   "dependencies": {
     "cli-progress": "^3.12.0",
-    "fast-csv": "^5.0.1"
+    "fast-csv": "^5.0.1",
+    "wikibase-sdk": "^9.2.4"
   }
 }

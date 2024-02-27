@@ -38,7 +38,9 @@ Generates JSON data with Typescript type `Record<CountryCode, CountryData>` such
 `"n"` field in the data means `"name"`. `"t"` field in the data means `"translation"`. It generates data in 
 
 ## How it does?
-run `npm run x` command to generate "GPS-data.json" file.
+- run `npm run mine-GPS` to generate GPS coordinates data with English place names
+- run `npm run i18n-1` to translate Country names to 15 other languages (open a folder named `generated-data` in the root directory)
+- 
 
 ### Details
 There are two data sources it use

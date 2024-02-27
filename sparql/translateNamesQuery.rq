@@ -1,0 +1,20 @@
+SELECT DISTINCT ?item ?itemLabel ?ar ?az ?de ?es ?fa ?fr ?id ?it ?kk ?ko ?ky ?ms ?ru ?tr ?zh
+  WHERE {
+    ?item rdfs:label "Austria"@en.
+    OPTIONAL { ?item rdfs:label ?ar. FILTER(LANG(?ar) = "ar") }
+OPTIONAL { ?item rdfs:label ?az. FILTER(LANG(?az) = "az") }
+OPTIONAL { ?item rdfs:label ?de. FILTER(LANG(?de) = "de") }
+OPTIONAL { ?item rdfs:label ?es. FILTER(LANG(?es) = "es") }
+OPTIONAL { ?item rdfs:label ?fa. FILTER(LANG(?fa) = "fa") }
+OPTIONAL { ?item rdfs:label ?fr. FILTER(LANG(?fr) = "fr") }
+OPTIONAL { ?item rdfs:label ?id. FILTER(LANG(?id) = "id") }
+OPTIONAL { ?item rdfs:label ?it. FILTER(LANG(?it) = "it") }
+OPTIONAL { ?item rdfs:label ?kk. FILTER(LANG(?kk) = "kk") }
+OPTIONAL { ?item rdfs:label ?ko. FILTER(LANG(?ko) = "ko") }
+OPTIONAL { ?item rdfs:label ?ky. FILTER(LANG(?ky) = "ky") }
+OPTIONAL { ?item rdfs:label ?ms. FILTER(LANG(?ms) = "ms") }
+OPTIONAL { ?item rdfs:label ?ru. FILTER(LANG(?ru) = "ru") }
+OPTIONAL { ?item rdfs:label ?tr. FILTER(LANG(?tr) = "tr") }
+OPTIONAL { ?item rdfs:label ?zh. FILTER(LANG(?zh) = "zh") }
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+  }
