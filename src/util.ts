@@ -44,7 +44,10 @@ export async function processIP2LocationData(
     let cntCoord = 0;
     const t1 = new Date().getTime();
 
-    const bar1 = new SingleBar({}, Presets.shades_classic);
+    const opt = {
+      format: "progress [{bar}] {percentage}% | {duration}s | {value}/{total}",
+    };
+    const bar1 = new SingleBar(opt);
 
     const lineCount = await getNumberOfLinesInFile(sourcefilePath);
     bar1.start(lineCount, 0);
@@ -130,7 +133,10 @@ export async function processDr5hnData(
     let cntCoord = 0;
     const t1 = new Date().getTime();
 
-    const bar1 = new SingleBar({}, Presets.shades_classic);
+    const opt = {
+      format: "progress [{bar}] {percentage}% | {duration}s | {value}/{total}",
+    };
+    const bar1 = new SingleBar(opt);
 
     const lineCount = await getNumberOfLinesInFile(sourcefilePath);
     bar1.start(lineCount, 0);
@@ -216,7 +222,7 @@ export async function httpGet(url: string) {
   }
 }
 
-const wdk = WBK({
+const wbk = WBK({
   instance: "https://www.wikidata.org",
   sparqlEndpoint: "https://query.wikidata.org/sparql",
 });
@@ -241,9 +247,45 @@ export const languages: SupportedLanguage[] = [
 
 export async function translateName(
   name: string,
-  missingResults: any,
-  isPrint = false
+  missingResults?: any
+): Promise<Record<SupportedLanguage, string>> {
+  if (!missingResults) {
+    missingResults = {};
+  }
+  let translations = await translateByLabel(name);
+  if (Object.keys(translations).length < 1) {
+    const labelInWiki = await getWikiDataLabelBySearchingEntity(name);
+    if (labelInWiki) {
+      translations = await translateByLabel(labelInWiki);
+    }
+  }
+  if (Object.keys(translations).length < 1) {
+    missingResults[name] = true;
+  }
+  return translations;
+}
+
+export async function getWikiDataLabelBySearchingEntity(
+  name: string
+): Promise<string | undefined> {
+  const searchResults = await httpGet(
+    wbk.searchEntities({ search: name, limit: 1 })
+  );
+  return searchResults?.search?.[0]?.label;
+}
+
+export function writeTranslationsToFiles(
+  translations: Record<string, Record<CountryCode, CountryData>>
 ) {
+  for (let langCode in translations) {
+    const fileName = "./generated-data/GPS-data-" + langCode + ".json";
+    writeFileSync(fileName, JSON.stringify(translations[langCode]));
+  }
+}
+
+export async function translateByLabel(
+  label: string
+): Promise<Record<SupportedLanguage, string>> {
   const selectExpression = languages.map((x) => "?" + x).join(" ");
   const languageFilter = languages
     .map(
@@ -254,39 +296,26 @@ export async function translateName(
   const query = `
   SELECT DISTINCT ?item ?itemLabel ${selectExpression}
   WHERE {
-    ?item rdfs:label "${name}"@en.
+    ?item rdfs:label "${label}"@en.
     ${languageFilter}
     SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
   }
   `;
-  const url = wdk.sparqlQuery(query);
-  const data = await httpGet(url);
-  const result: any = {};
-  for (const lang of languages) {
-    let maximumResult: any = {};
-    for (let i of data.results.bindings) {
-      if (Object.keys(i).length > Object.keys(maximumResult).length) {
-        maximumResult = i;
-      }
+  const data = await httpGet(wbk.sparqlQuery(query));
+  if (!data?.results?.bindings || !Array.isArray(data.results.bindings)) {
+    return {};
+  }
+  const result: Record<SupportedLanguage, string> = {};
+  let maximumResult: any = {};
+  for (let i of data.results.bindings) {
+    if (Object.keys(i).length > Object.keys(maximumResult).length) {
+      maximumResult = i;
     }
+  }
+  for (const lang of languages) {
     if (maximumResult && maximumResult[lang]) {
       result[lang] = maximumResult[lang].value;
     }
   }
-  if (Object.keys(result).length === 0) {
-    missingResults[name] = true;
-  }
-  if (isPrint) {
-    console.log("result: ", result, "missing: ", missingResults);
-  }
   return result;
-}
-
-export function writeTranslationsToFiles(
-  translations: Record<string, Record<CountryCode, CountryData>>
-) {
-  for (let langCode in translations) {
-    const fileName = "./generated-data/GPS-data-" + langCode + ".json";
-    writeFileSync(fileName, JSON.stringify(translations[langCode]));
-  }
 }

@@ -1,7 +1,8 @@
 import { readFileSync, writeFileSync } from "fs";
 import { CountryCode, CountryData } from "./types.js";
-import { Presets, SingleBar } from "cli-progress";
+import { SingleBar } from "cli-progress";
 import { translateName, writeTranslationsToFiles } from "./util.js";
+import { mappingForMissingCountryNames } from "./hard-coded-data.js";
 
 export async function translateCountryNames(
   fileToRead = "GPS-data.json",
@@ -18,40 +19,17 @@ export async function translateCountryNames(
   let promises = [];
   const translations: Record<string, Record<CountryCode, CountryData>> = {};
 
-  const bar1 = new SingleBar({}, Presets.shades_classic);
+  const opt = {
+    format: "progress [{bar}] {percentage}% | {duration}s | {value}/{total}",
+  };
+  const bar1 = new SingleBar(opt);
   bar1.start(totalDataCount, 0);
 
   const missingResults = {};
-  const nameMap: Record<string, string> = {
-    "Antigua And Barbuda": "Antigua and Barbuda",
-    "Bonaire, Sint Eustatius and Saba": "Caribbean Netherlands",
-    China: "People's Republic of China",
-    "Cote D'Ivoire (Ivory Coast)": "Ivory Coast",
-    "Fiji Islands": "Fiji",
-    "Gambia The": "The Gambia",
-    "Hong Kong S.A.R.": "Hong Kong",
-    Ireland: "Republic of Ireland",
-    Micronesia: "Federated States of Micronesia",
-    "Papua new Guinea": "Papua New Guinea",
-    "Saint Kitts And Nevis": "Saint Kitts and Nevis",
-    "Saint Vincent And The Grenadines": "Saint Vincent and the Grenadines",
-    "Sao Tome and Principe": "São Tomé and Príncipe",
-    Swaziland: "Eswatini",
-    "Trinidad And Tobago": "Trinidad and Tobago",
-    "United States": "United States of America",
-    "Virgin Islands (US)": "Virgin Islands",
-    "Palestine, State of": "State of Palestine",
-    "Aland Islands": "Åland Islands",
-    "Saint Martin (French part)": "Saint-Martin",
-    "Virgin Islands (British)": "British Virgin Islands",
-    "Cocos (Keeling) Islands": "Cocos Islands",
-    "Saint Barthelemy": "Saint Barthélemy",
-    "Falkland Islands [Malvinas]": "Falkland Islands",
-    "Sint Maarten (Dutch part)": "Sint Maarten",
-  };
   for (let countryCode in data) {
     const englishName = data[countryCode].n;
-    const nameToTranslate = nameMap[englishName] ?? englishName;
+    const nameToTranslate =
+      mappingForMissingCountryNames[englishName] ?? englishName;
     promises.push({
       promise: translateName(nameToTranslate, missingResults),
       countryCode,
@@ -73,9 +51,12 @@ export async function translateCountryNames(
   }
   writeTranslationsToFiles(translations);
   bar1.stop();
-  if (isPrint && Object.keys(missingResults).length > 0)
-    console.log("missingResults: ", missingResults);
-  console.log(new Date().getTime() - t1, "MS elapsed");
+  if (isPrint && Object.keys(missingResults).length > 0) {
+    writeFileSync(
+      "./missing-data/missing-country-names.json",
+      JSON.stringify(Object.keys(missingResults))
+    );
+  }
 }
 
 translateCountryNames("GPS-data.json", true);

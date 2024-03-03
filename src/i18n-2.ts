@@ -59,11 +59,10 @@ async function translateRegionNames(
   bar1.stop();
   if (isPrint && Object.keys(missingResults).length > 0) {
     writeFileSync(
-      "missingResults.json",
+      "./missing-data/missing-region-names.json",
       JSON.stringify(Object.keys(missingResults))
     );
   }
-  console.log(new Date().getTime() - t1, "MS elapsed");
 }
 
 translateRegionNames("GPS-data.json", true);

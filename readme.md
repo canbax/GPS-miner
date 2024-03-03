@@ -39,8 +39,24 @@ Generates JSON data with Typescript type `Record<CountryCode, CountryData>` such
 
 ## How it does?
 - run `npm run mine-GPS` to generate GPS coordinates data with English place names
-- run `npm run i18n-1` to translate Country names to 15 other languages (open a folder named `generated-data` in the root directory)
-- 
+- run `npm run i18n-1` to translate Country names to 15 other languages (To run the command, open a folder named `generated-data` in the root directory )
+- run `npm run i18n-2`  to translate Region names 
+
+Outputs like below
+
+------------------------------------------------------------------
+gps-miner@0.0.1 i18n-1
+tsc && node src/i18n-1.js && rm src/*.js
+
+progress [========================================] 100% | 57s | 242/242
+yusufcanbaz@Yusufs-MacBook-Pro GPS-miner % npm run i18n-2
+
+gps-miner@0.0.1 i18n-2
+tsc && node src/i18n-2.js && rm src/*.js
+
+progress [========================================] 100% | 1239s | 5932/5932
+
+------------------------------------------------------------------
 
 ### Details
 There are two data sources it use
