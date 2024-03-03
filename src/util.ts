@@ -222,11 +222,6 @@ export async function httpGet(url: string) {
   }
 }
 
-const wbk = WBK({
-  instance: "https://www.wikidata.org",
-  sparqlEndpoint: "https://query.wikidata.org/sparql",
-});
-
 export const languages: SupportedLanguage[] = [
   "ar",
   "az",
@@ -268,6 +263,10 @@ export async function translateName(
 export async function getWikiDataLabelBySearchingEntity(
   name: string
 ): Promise<string | undefined> {
+  const wbk = WBK({
+    instance: "https://www.wikidata.org",
+    sparqlEndpoint: "https://query.wikidata.org/sparql",
+  });
   const searchResults = await httpGet(
     wbk.searchEntities({ search: name, limit: 1 })
   );
@@ -286,6 +285,10 @@ export function writeTranslationsToFiles(
 export async function translateByLabel(
   label: string
 ): Promise<Record<SupportedLanguage, string>> {
+  const wbk = WBK({
+    instance: "https://www.wikidata.org",
+    sparqlEndpoint: "https://query.wikidata.org/sparql",
+  });
   const selectExpression = languages.map((x) => "?" + x).join(" ");
   const languageFilter = languages
     .map(
