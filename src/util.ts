@@ -247,7 +247,7 @@ export const languages: SupportedLanguage[] = [
 
 export async function translateName(
   name: string,
-  missingResults?: any
+  missingResults?: Record<string, boolean>
 ): Promise<Record<SupportedLanguage, string>> {
   if (!missingResults) {
     missingResults = {};
