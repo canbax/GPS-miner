@@ -9,8 +9,8 @@
     "npm": "10.x"
   },
   "scripts": {
-    "test": "vitest run",
-    "test-dev": "vitest dev",
+    "test": "vitest",
+    "test-2": "vitest run",
     "tsc": "tsc",
     "mine-GPS": "tsc && node src/mine-GPS.js && rm src/*.js",
     "i18n-1": "tsc && node src/i18n-1.js && rm src/*.js",

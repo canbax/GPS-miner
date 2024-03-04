@@ -215,7 +215,14 @@ export function printStatisticsInGeneratedFile(fileName: string) {
 
 export async function httpGet(url: string) {
   try {
-    const result = await fetch(url);
+    const headers = new Headers();
+    headers.append("pragma", "no-cache");
+    headers.append(
+      "User-Agent",
+      "GPS-minerBot/0.0.1 (https://github.com/canbax/GPS-miner; yusufsaidcanbaz@gmail.com)"
+    );
+    headers.append("cache-control", "no-cache");
+    const result = await fetch(url, { cache: "no-store", headers });
     return await result.json();
   } catch (error) {
     return "error: " + error;
