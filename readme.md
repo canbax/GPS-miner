@@ -1,5 +1,7 @@
 # GPS-miner
 
+A script to generate multilingual GPS data of all places in the world in a hierarchical structure.
+
 ## What it does?
 
 Generates JSON data with Typescript type `Record<CountryCode, CountryData>` such as
