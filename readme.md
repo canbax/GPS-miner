@@ -35,36 +35,26 @@ Generates JSON data with Typescript type `Record<CountryCode, CountryData>` such
 }
 ```
 
-`"n"` field in the data means `"name"`. `"t"` field in the data means `"translation"`. It generates data in
+`"n"` field in the data means "name". `"t"` field in the data means "translation". `"g"` field in the data means "GPS coordinates". See "generated-data" folder too see the whole data. Each file in the folder is in a specific language. For example, "GPS-data-tr.json" file is in Turkish.
+
+Currently there are 242 countries, 5932 regions and 197778 GPS coordinates.
 
 ## How it does?
 
 - run `npm run mine-GPS` to generate GPS coordinates data with English place names (takes ~ 60 seconds)
-- run `npm run i18n-1` to translate country names to 15 other languages  (takes ~ 60 seconds)
+  - processes "IP2LOCATION" and "Dr5hn" data files and creates "GPS-data.json" file.
+- run `npm run i18n-1` to translate country names to 15 other languages (takes ~ 60 seconds)
 - run `npm run i18n-2` to translate region/state/city names (takes ~ 5 minutes)
 - run `npm run i18n-3` to translate city/district/county names (takes ~ 12 hours)
 
-Outputs like below
-
----
-
-gps-miner@0.0.1 i18n-1
-tsc && node src/i18n-1.js && rm src/\*.js
-
-progress [========================================] 100% | 57s | 242/242
-yusufcanbaz@Yusufs-MacBook-Pro GPS-miner % npm run i18n-2
-
-gps-miner@0.0.1 i18n-2
-tsc && node src/i18n-2.js && rm src/\*.js
-
-progress [========================================] 100% | 1239s | 5932/5932
-
----
-
 ### Details
 
-There are two data sources it use
+- `nvm use 20.11.0` to use the right Node.js version
 
-`nvm use 20.11.0` to use the right Node.js version
+- Special thanks to GPS data providers
 
-This site or product includes IP2Location LITE data available from <a href="https://lite.ip2location.com">https://lite.ip2location.com</a>.
+  - This site or product includes IP2Location LITE data available from <a href="https://lite.ip2location.com">https://lite.ip2location.com</a>.
+
+  - https://github.com/dr5hn/countries-states-cities-database
+
+- Place names are translated to 15 other languages (Arabic, Azeri, German, Spanish, Farsi, French, Indonesian, Italian, Kazakh, Korean, Kyrgyz, Malay, Russian, and, Turkish) using [Wikidata](https://www.wikidata.org/) and [wikibase-sdk](https://www.npmjs.com/package/wikibase-sdk).
