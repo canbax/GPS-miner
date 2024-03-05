@@ -1,7 +1,12 @@
 import { readFileSync, writeFileSync } from "fs";
 import { CountryCode, CountryData } from "./types.js";
 import { SingleBar } from "cli-progress";
-import { translateName, writeTranslationsToFiles } from "./util.js";
+import {
+  PROGRESS_BAR_FORMAT,
+  readTranslationsData,
+  translateName,
+  writeTranslationsToFiles,
+} from "./util.js";
 import { mappingForMissingCountryNames } from "./hard-coded-data.js";
 
 export async function translateCountryNames(
@@ -17,12 +22,9 @@ export async function translateCountryNames(
   let currIndex = 0;
   const totalDataCount = Object.keys(data).length;
   let promises = [];
-  const translations: Record<string, Record<CountryCode, CountryData>> = {};
+  const translations = readTranslationsData();
 
-  const opt = {
-    format: "progress [{bar}] {percentage}% | {duration}s | {value}/{total}",
-  };
-  const bar1 = new SingleBar(opt);
+  const bar1 = new SingleBar(PROGRESS_BAR_FORMAT);
   bar1.start(totalDataCount, 0);
 
   const missingResults = {};

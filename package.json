@@ -15,6 +15,7 @@
     "mine-GPS": "tsc && node src/mine-GPS.js && rm src/*.js",
     "i18n-1": "tsc && node src/i18n-1.js && rm src/*.js",
     "i18n-2": "tsc && node src/i18n-2.js && rm src/*.js",
+    "i18n-3": "tsc && node src/i18n-3.js && rm src/*.js",
     "del-js": "rm src/*.js"
   },
   "keywords": [

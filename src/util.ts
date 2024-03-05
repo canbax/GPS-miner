@@ -35,6 +35,10 @@ function getNumberOfLinesInFile(fileName: string): Promise<number> {
   });
 }
 
+export const PROGRESS_BAR_FORMAT = {
+  format: "progress [{bar}] {percentage}% | {duration}s | {value}/{total}",
+} as const;
+
 export async function processIP2LocationData(
   data: Record<CountryCode, CountryData>,
   generatedFile: string = "GPS-data.json",
@@ -44,10 +48,7 @@ export async function processIP2LocationData(
     let cntCoord = 0;
     const t1 = new Date().getTime();
 
-    const opt = {
-      format: "progress [{bar}] {percentage}% | {duration}s | {value}/{total}",
-    };
-    const bar1 = new SingleBar(opt);
+    const bar1 = new SingleBar(PROGRESS_BAR_FORMAT);
 
     const lineCount = await getNumberOfLinesInFile(sourcefilePath);
     bar1.start(lineCount, 0);
@@ -131,12 +132,7 @@ export async function processDr5hnData(
 ) {
   return new Promise(async (resolve) => {
     let cntCoord = 0;
-    const t1 = new Date().getTime();
-
-    const opt = {
-      format: "progress [{bar}] {percentage}% | {duration}s | {value}/{total}",
-    };
-    const bar1 = new SingleBar(opt);
+    const bar1 = new SingleBar(PROGRESS_BAR_FORMAT);
 
     const lineCount = await getNumberOfLinesInFile(sourcefilePath);
     bar1.start(lineCount, 0);
@@ -182,14 +178,7 @@ export async function processDr5hnData(
         bar1.stop();
         writeFile(generatedFile, JSON.stringify(data), function (err) {
           if (err) console.log(err);
-          const t2 = new Date().getTime();
-          console.log(
-            "milliseconds passed",
-            t2 - t1,
-            "added",
-            cntCoord,
-            "coordinates"
-          );
+          console.log("added", cntCoord, "coordinates");
           resolve(true);
         });
       });
@@ -328,4 +317,13 @@ export async function translateByLabel(
     }
   }
   return result;
+}
+
+export function readTranslationsData() {
+  const translations: Record<string, Record<CountryCode, CountryData>> = {};
+  for (let langCode of languages) {
+    const fileName = "./generated-data/GPS-data-" + langCode + ".json";
+    translations[langCode] = JSON.parse(readFileSync(fileName, "utf8"));
+  }
+  return translations;
 }
