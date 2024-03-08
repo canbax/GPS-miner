@@ -47,6 +47,7 @@ async function translateCityNames(
           const results = await Promise.all(promises.map((x) => x.promise));
           for (let i = 0; i < results.length; i++) {
             for (let lang in results[i]) {
+              if (countryCode === "TR") continue;
               translations[lang][promises[i].countryCode][">"][
                 promises[i].regionEnglishName
               ][">"][promises[i].cityEnglishName].t = results[i][lang];

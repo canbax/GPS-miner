@@ -46,7 +46,6 @@ export async function processIP2LocationData(
 ) {
   return new Promise(async (resolve) => {
     let cntCoord = 0;
-    const t1 = new Date().getTime();
 
     const bar1 = new SingleBar(PROGRESS_BAR_FORMAT);
 
@@ -58,62 +57,67 @@ export async function processIP2LocationData(
       .on("error", (error: any) => console.error(error))
       .on("data", (row: any) => {
         bar1.increment(1);
-        const countryCode = row[2];
-        const countryName = row[3];
-        let regionName = row[4];
-        let cityName = row[5];
-        const lat = row[6];
-        const lng = row[7];
-        if (countryCode === "-" || countryName === "-" || regionName === "-") {
-          return;
-        }
-        if (CITY_NAMES_EN_TO_TR[regionName]) {
-          regionName = CITY_NAMES_EN_TO_TR[regionName];
-        }
-        if (CITY_NAMES_EN_TO_TR[cityName]) {
-          cityName = CITY_NAMES_EN_TO_TR[cityName];
-        }
-        if (!data[countryCode]) {
-          data[countryCode] = { n: countryName, t: "", ">": {} };
-        }
-        if (!data[countryCode][">"][regionName]) {
-          data[countryCode][">"][regionName] = { t: "", ">": {} };
-        }
-        if (!data[countryCode][">"][regionName][">"][cityName]) {
-          const coords: [number, number] = [Number(lat), Number(lng)];
-          if (hasTheSameCoordinate(data[countryCode][">"][regionName], coords))
-            return;
-          if (countryCode == "TR") {
-            const s = convertEnglishSubPlaceNameToTurkish(regionName, cityName);
-            if (s) {
-              data[countryCode][">"][regionName][">"][s] = { g: coords, t: "" };
-              cntCoord++;
-            }
-          } else {
-            data[countryCode][">"][regionName][">"][cityName] = {
-              g: coords,
-              t: "",
-            };
-            cntCoord++;
-          }
-        }
+        const isAdded = addToData(
+          data,
+          row[2],
+          row[3],
+          row[4],
+          row[5],
+          row[6],
+          row[7]
+        );
+        if (isAdded) cntCoord++;
       })
       .on("end", () => {
         bar1.stop();
-        writeFile(generatedFile, JSON.stringify(data), function (err) {
-          if (err) console.log(err);
-          const t2 = new Date().getTime();
-          console.log(
-            "processed in",
-            t2 - t1,
-            "milliseconds",
-            cntCoord,
-            "coordinates"
-          );
-          resolve(true);
-        });
+        writeDataToFile(data, generatedFile, resolve);
       });
   });
+}
+
+function addToData(
+  data: Record<CountryCode, CountryData>,
+  countryCode: string,
+  countryName: string,
+  regionName: string,
+  cityName: string,
+  lat: string,
+  lng: string
+): boolean {
+  if (countryCode === "-" || countryName === "-" || regionName === "-") {
+    return false;
+  }
+  if (CITY_NAMES_EN_TO_TR[regionName]) {
+    regionName = CITY_NAMES_EN_TO_TR[regionName];
+  }
+  if (CITY_NAMES_EN_TO_TR[cityName]) {
+    cityName = CITY_NAMES_EN_TO_TR[cityName];
+  }
+  if (!data[countryCode]) {
+    data[countryCode] = { n: countryName, t: "", ">": {} };
+  }
+  if (!data[countryCode][">"][regionName]) {
+    data[countryCode][">"][regionName] = { t: "", ">": {} };
+  }
+  if (!data[countryCode][">"][regionName][">"][cityName]) {
+    const coords: [number, number] = [Number(lat), Number(lng)];
+    if (hasTheSameCoordinate(data[countryCode][">"][regionName], coords))
+      return false;
+    if (countryCode === "TR") {
+      const s = convertEnglishSubPlaceNameToTurkish(regionName, cityName);
+      if (s) {
+        data[countryCode][">"][regionName][">"][s] = { g: coords, t: "" };
+        return true;
+      }
+    } else {
+      data[countryCode][">"][regionName][">"][cityName] = {
+        g: coords,
+        t: "",
+      };
+      return true;
+    }
+  }
+  return false;
 }
 
 function hasTheSameCoordinate(region: RegionData, coords: [number, number]) {
@@ -154,35 +158,45 @@ export async function processDr5hnData(
         let cityName = row[1];
         const lat = row[8];
         const lng = row[9];
-        if (countryCode === "-" || countryName === "-" || regionName === "-") {
-          return;
-        }
-        if (!data[countryCode]) {
-          data[countryCode] = { n: countryName, t: "", ">": {} };
-        }
-        if (!data[countryCode][">"][regionName]) {
-          data[countryCode][">"][regionName] = { t: "", ">": {} };
-        }
-        if (!data[countryCode][">"][regionName][">"][cityName]) {
-          const coords: [number, number] = [Number(lat), Number(lng)];
-          if (hasTheSameCoordinate(data[countryCode][">"][regionName], coords))
-            return;
-          data[countryCode][">"][regionName][">"][cityName] = {
-            g: coords,
-            t: "",
-          };
-          cntCoord++;
-        }
+        const isAdded = addToData(
+          data,
+          countryCode,
+          countryName,
+          regionName,
+          cityName,
+          lat,
+          lng
+        );
+        if (isAdded) cntCoord++;
       })
       .on("end", () => {
         bar1.stop();
-        writeFile(generatedFile, JSON.stringify(data), function (err) {
-          if (err) console.log(err);
-          console.log("added", cntCoord, "coordinates");
-          resolve(true);
-        });
+        writeDataToFile(data, generatedFile, resolve);
       });
   });
+}
+
+function writeDataToFile(
+  data: Record<CountryCode, CountryData>,
+  generatedFile: string,
+  resolve: (value: unknown) => void
+) {
+  pruneRegionsWithNoCity(data);
+  writeFile(generatedFile, JSON.stringify(data), function (err) {
+    if (err) console.log(err);
+    resolve(true);
+  });
+}
+
+function pruneRegionsWithNoCity(data: Record<CountryCode, CountryData>) {
+  for (const countryCode in data) {
+    for (const reg in data[countryCode][">"]) {
+      const cityCount = Object.keys(data[countryCode][">"][reg][">"]).length;
+      if (cityCount < 1) {
+        delete data[countryCode][">"][reg];
+      }
+    }
+  }
 }
 
 export function printStatisticsInGeneratedFile(fileName: string) {
@@ -326,4 +340,11 @@ export function readTranslationsData() {
     translations[langCode] = JSON.parse(readFileSync(fileName, "utf8"));
   }
   return translations;
+}
+
+export function readGPSData() {
+  const data: Record<CountryCode, CountryData> = JSON.parse(
+    readFileSync("GPS-data.json", "utf8")
+  );
+  return data;
 }

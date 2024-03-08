@@ -48,6 +48,7 @@ async function translateRegionNames(
             if (!translations[lang]) {
               translations[lang] = JSON.parse(JSON.stringify(data));
             }
+            if (countryCode === "TR") continue;
             translations[lang][promises[i].countryCode][">"][
               promises[i].regionEnglishName
             ].t = results[i][lang];

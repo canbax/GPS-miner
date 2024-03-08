@@ -1095,7 +1095,11 @@ export function convertEnglishSubPlaceNameToTurkish(
   subPlace: string
 ): string | false {
   const subPlaces = TurkeyMap[city.toLocaleLowerCase("tr")];
-  if (!subPlaces) throw `City ${city} not found in Turkey Map`;
+  if (!subPlaces) {
+    return false;
+  }
+  if (subPlace.toLowerCase() === "merkez") return city;
+
   subPlaces.push(city);
 
   for (let p of subPlaces) {
