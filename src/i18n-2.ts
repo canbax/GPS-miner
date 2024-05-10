@@ -68,5 +68,5 @@ async function translateRegionNames(
   }
 }
 
-translateRegionNames("GPS-data.json", true);
-// translateName("United States", {});
+// translateRegionNames("GPS-data.json", true);
+translateName("United States", {});

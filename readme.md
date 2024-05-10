@@ -48,6 +48,8 @@ Currently there are 242 countries, 5932 regions and 197778 GPS coordinates.
 - run `npm run i18n-1` to translate country names to 15 other languages (takes ~ 60 seconds)
 - run `npm run i18n-2` to translate region/state/city names (takes ~ 5 minutes)
 - run `npm run i18n-3` to translate city/district/county names (takes ~ 12 hours)
+- run `npm run prune-generated-data` to prune data from unnecessary data
+- run `npm run enrich-gps` sets GPS of country and region to the average of its children (ignore grandchildren)
 
 ### Details
 
