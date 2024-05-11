@@ -5,7 +5,7 @@ import {
   RegionData,
   SupportedLanguage,
 } from "./types.js";
-import { SingleBar, Presets } from "cli-progress";
+import { SingleBar } from "cli-progress";
 import { createReadStream, writeFile, writeFileSync, readFileSync } from "fs";
 import { parse } from "fast-csv";
 import { WBK } from "wikibase-sdk";
@@ -291,6 +291,10 @@ export function writeTranslationsToFiles(
     const fileName = "./generated-data/GPS-data-" + langCode + ".json";
     writeFileSync(fileName, JSON.stringify(translations[langCode]));
   }
+}
+
+export function writeDataFile(data: Record<CountryCode, CountryData>) {
+  writeFileSync("GPS-data.json", JSON.stringify(data));
 }
 
 export async function translateByLabel(

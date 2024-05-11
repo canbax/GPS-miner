@@ -1,4 +1,9 @@
-import { readTranslationsData, writeTranslationsToFiles } from "./util.js";
+import {
+  readGPSData,
+  readTranslationsData,
+  writeDataFile,
+  writeTranslationsToFiles,
+} from "./util.js";
 
 /**
  * sets GPS of country and region to the average of its children (ignore grandchildren)
@@ -44,7 +49,24 @@ function setCountryRegionGPS(): void {
       translations[langCode][countryCode].g[1] = totalRegionLng / regionCount;
     }
   }
+  const data = readGPSData();
+  const langCode = "tr";
+  for (let countryCode in translations[langCode]) {
+    data[countryCode].g = translations[langCode][countryCode].g;
+    for (let regionName in translations[langCode][countryCode][">"]) {
+      data[countryCode][">"][regionName].g =
+        translations[langCode][countryCode][">"][regionName].g;
+      for (let cityName in translations[langCode][countryCode][">"][regionName][
+        ">"
+      ]) {
+        data[countryCode][">"][regionName][">"][cityName].g =
+          translations[langCode][countryCode][">"][regionName][">"][cityName].g;
+      }
+    }
+  }
+
   writeTranslationsToFiles(translations);
+  writeDataFile(data);
 }
 
 setCountryRegionGPS();
