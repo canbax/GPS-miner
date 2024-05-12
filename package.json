@@ -1,7 +1,7 @@
 {
   "name": "gps-miner",
-  "version": "0.0.1",
-  "description": "A script to scrape GPS data of cities and translates to different languages using wikidata",
+  "version": "1.0.0",
+  "description": "A script to scrape GPS data of cities and translate into different languages using wikidata",
   "main": "index.js",
   "type": "module",
   "engines": {

@@ -260,7 +260,6 @@ export async function translateName(
   let translations = await translateByLabel(name);
   if (Object.keys(translations).length < 1) {
     const labelInWiki = await getWikiDataLabelBySearchingEntity(name);
-    console.log("labelInWiki: ", labelInWiki);
     if (labelInWiki) {
       translations = await translateByLabel(labelInWiki);
     }
@@ -319,7 +318,6 @@ export async function translateByLabel(
     SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
   }
   `;
-  console.log("query: ", query);
   const data = await httpGet(wbk.sparqlQuery(query));
   if (!data?.results?.bindings || !Array.isArray(data.results.bindings)) {
     return {};
