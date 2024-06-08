@@ -13,7 +13,7 @@ awk -F'\t' 'NR==1 || (($11 == "" || $11 == "-") && ($3 == "relation") && ($7 != 
 awk -F'\t' 'NR==1 || (($11 == "" || $11 == "-") && ($3 == "relation" || $3 == "node") && ($7 != "" && $8 != "" && $22 != "") && ($5 == "multiple" || $5 == "place") && ($6 == "state_district" || $6 == "city" || $6 == "town" || $6 == "village" || $6 == "municipality") ) { print $1, $2, $3, $5, $6, $7, $8, $9, $12, $13, $14, $15, $16 }' OFS='\t' planet-latest_geonames.tsv > filtered_output3.tsv
 
 # empty street ($11); class ($5) is multiple or place; type ($6) is state_district or city or town or village or municipality; lat, long, wikidata are not empty; and place_rank is smaller than 16 
-awk -F'\t' 'NR==1 || (($11 == "" || $11 == "-") && ($9 < 16) && ($3 == "relation" || $3 == "node") && ($7 != "" && $8 != "" && $22 != "") && ($5 == "multiple" || $5 == "place") && ($6 == "state_district" || $6 == "city" || $6 == "town" || $6 == "village" || $6 == "municipality") ) { print $0 }' OFS='\t' planet-latest_geonames.tsv > filtered_output3.tsv
+awk -F'\t' 'NR==1 || (($11 == "" || $11 == "-") && ($9 < 16) && ($3 == "relation" || $3 == "node") && ($7 != "" && $8 != "" && $22 != "") && ($5 == "multiple" || $5 == "place") && ($6 == "state_district" || $6 == "city" || $6 == "town" || $6 == "village" || $6 == "municipality") ) { print $0 }' OFS='\t' planet-latest_geonames.tsv > filtered_output4.tsv
 
 # search for a name
 awk -F'\t' '$1 == "Keçiören" { print $1,$3,$5,$6 }' planet-latest_geonames.tsv
