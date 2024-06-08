@@ -2,6 +2,7 @@ import { exec } from "child_process";
 import {
   CountryCode,
   CountryData,
+  CountryTranslations,
   RegionData,
   SupportedLanguage,
 } from "./types.js";
@@ -71,6 +72,37 @@ export async function processIP2LocationData(
       .on("end", () => {
         bar1.stop();
         writeDataToFile(data, generatedFile, resolve);
+      });
+  });
+}
+
+export async function extractCountriesFromIP2LocationData(
+  data: CountryTranslations,
+  generatedFile: string = "GPS-data.json",
+  sourcefilePath: string = "./data/IP2LOCATION-LITE-DB5.IPV6.CSV"
+) {
+  return new Promise(async (resolve) => {
+    const bar1 = new SingleBar(PROGRESS_BAR_FORMAT);
+    const lineCount = await getNumberOfLinesInFile(sourcefilePath);
+    bar1.start(lineCount, 0);
+
+    createReadStream(sourcefilePath)
+      .pipe(parse({ headers: false }))
+      .on("error", (error: any) => console.error(error))
+      .on("data", (row: any) => {
+        bar1.increment(1);
+        const countryCode = row[2];
+        const countryName = row[3];
+        if (countryCode.length < 2) return;
+        if (data[countryCode]) {
+          data[countryCode]["en"] = countryName;
+        } else {
+          data[countryCode] = { en: countryName };
+        }
+      })
+      .on("end", () => {
+        bar1.stop();
+        writeCountryTranslationsFile(data, generatedFile, resolve);
       });
   });
 }
@@ -173,6 +205,17 @@ export async function processDr5hnData(
         bar1.stop();
         writeDataToFile(data, generatedFile, resolve);
       });
+  });
+}
+
+function writeCountryTranslationsFile(
+  data: CountryTranslations,
+  generatedFile: string,
+  resolve: (value: unknown) => void
+) {
+  writeFile(generatedFile, JSON.stringify(data), function (err) {
+    if (err) console.log(err);
+    resolve(true);
   });
 }
 

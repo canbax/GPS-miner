@@ -12,6 +12,7 @@
     "test": "vitest",
     "test-2": "vitest run",
     "tsc": "tsc",
+    "mine-countries": "tsc && node src/mine-countries.js && rm src/*.js",
     "mine-GPS": "tsc && node src/mine-GPS.js && rm src/*.js",
     "i18n-1": "tsc && node src/i18n-1.js && rm src/*.js",
     "i18n-2": "tsc && node src/i18n-2.js && rm src/*.js",
@@ -39,6 +40,7 @@
   },
   "dependencies": {
     "cli-progress": "^3.12.0",
+    "express": "^4.19.2",
     "fast-csv": "^5.0.1",
     "wikibase-sdk": "^9.2.4"
   }

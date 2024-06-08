@@ -275,6 +275,7 @@ export type SupportedLanguage =
   | "ar"
   | "az"
   | "de"
+  | "en"
   | "es"
   | "fa"
   | "fr"
@@ -288,3 +289,8 @@ export type SupportedLanguage =
   | "tr"
   | "zh"
   | string;
+
+export type CountryTranslations = Record<
+  CountryCode,
+  Record<SupportedLanguage, string>
+>;
