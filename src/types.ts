@@ -294,3 +294,15 @@ export type CountryTranslations = Record<
   CountryCode,
   Record<SupportedLanguage, string>
 >;
+
+type WikiDataID = string;
+type CSVData = [string, string, string, CountryCode, number, number];
+// name, alternative names, state name, CountryCode, latitude, longitude,
+export type Cities = Record<WikiDataID, CSVData>;
+type StateName = string;
+type CityName = string;
+// city name, state name, latitude, longitude
+export type WorldCities = Record<
+  CountryCode,
+  Record<StateName, Record<CityName, [string, number, number]>>
+>;

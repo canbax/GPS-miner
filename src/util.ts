@@ -1,10 +1,12 @@
 import { exec } from "child_process";
 import {
+  Cities,
   CountryCode,
   CountryData,
   CountryTranslations,
   RegionData,
   SupportedLanguage,
+  WorldCities,
 } from "./types.js";
 import { SingleBar } from "cli-progress";
 import { createReadStream, writeFile, writeFileSync, readFileSync } from "fs";
@@ -394,4 +396,133 @@ export function readGPSData() {
     readFileSync("GPS-data.json", "utf8")
   );
   return data;
+}
+
+function convertNamesToTurkishIfNeeded(
+  countryCode: CountryCode,
+  cityName: string,
+  stateName: string
+) {
+  if (countryCode !== "TR") {
+    return { cityName, stateName };
+  }
+}
+
+export async function processDr5hnForCities(
+  data: WorldCities,
+  generatedFile: string = "./data/all-cities.json",
+  sourcefilePath: string = "./data/cities.csv"
+) {
+  return new Promise(async () => {
+    const bar1 = new SingleBar(PROGRESS_BAR_FORMAT);
+
+    const lineCount = await getNumberOfLinesInFile(sourcefilePath);
+    bar1.start(lineCount, 0);
+
+    let isHeaderLine = true;
+    createReadStream(sourcefilePath)
+      .pipe(parse({ headers: false }))
+      .on("error", (error: any) => console.error(error))
+      .on("data", (row: any) => {
+        bar1.increment(1);
+
+        if (isHeaderLine) {
+          isHeaderLine = false;
+          return;
+        }
+        let cityName = row[1];
+        let stateName = row[4];
+        const countryCode = row[6] as CountryCode;
+        const lat = row[8];
+        const lng = row[9];
+        if (!data[countryCode]) {
+          data[countryCode] = {};
+        }
+        if (countryCode === "TR") {
+          if (CITY_NAMES_EN_TO_TR[stateName]) {
+            stateName = CITY_NAMES_EN_TO_TR[stateName];
+          }
+          const s = convertEnglishSubPlaceNameToTurkish(stateName, cityName);
+          if (s) {
+            cityName = s;
+          } else {
+            return; // turkish city not defined!
+          }
+        }
+        if (!data[countryCode][stateName]) {
+          data[countryCode][stateName] = {};
+        }
+        data[countryCode][stateName][cityName] = ["", lat, lng];
+      })
+      .on("end", () => {
+        bar1.stop();
+        writeFileSync(generatedFile, JSON.stringify(data));
+      });
+  });
+}
+
+export async function processOSMForCities(
+  data: WorldCities,
+  generatedFile: string = "./data/all-cities.json",
+  sourcefilePath: string = "./data/filtered_output5.tsv"
+) {
+  return new Promise(async () => {
+    const bar1 = new SingleBar(PROGRESS_BAR_FORMAT);
+
+    const lineCount = await getNumberOfLinesInFile(sourcefilePath);
+    bar1.start(lineCount, 0);
+
+    let isHeaderLine = true;
+    createReadStream(sourcefilePath)
+      .pipe(
+        parse({
+          headers: false,
+          trim: true,
+          ignoreEmpty: true,
+          delimiter: "\t",
+        })
+      )
+      .on("error", (error: any) => console.error(error))
+      .on("data", (row: any) => {
+        bar1.increment(1);
+
+        if (isHeaderLine) {
+          isHeaderLine = false;
+          return;
+        }
+        let cityName = row[0];
+        let otherNames = row[1];
+        let stateName = row[4];
+        const countryCode = row[5].toUpperCase() as CountryCode;
+        const lat = row[3];
+        const lng = row[2];
+        if (!data[countryCode]) {
+          data[countryCode] = {};
+        }
+        if (countryCode === "TR") {
+          if (CITY_NAMES_EN_TO_TR[stateName]) {
+            stateName = CITY_NAMES_EN_TO_TR[stateName];
+          }
+          const s = convertEnglishSubPlaceNameToTurkish(stateName, cityName);
+          if (s) {
+            cityName = s;
+          } else {
+            return; // turkish city not defined!
+          }
+        }
+        if (!data[countryCode][stateName]) {
+          data[countryCode][stateName] = {};
+        }
+        if (data[countryCode][stateName][cityName]) {
+          console.log("set othernames: ", otherNames);
+          data[countryCode][stateName][cityName][0] = otherNames;
+        } else {
+          data[countryCode][stateName][cityName] = [otherNames, lat, lng];
+        }
+      })
+      .on("end", () => {
+        bar1.stop();
+        writeFileSync(generatedFile, JSON.stringify(data, null, 2));
+      });
+  });
 }

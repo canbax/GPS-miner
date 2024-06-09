@@ -12,6 +12,7 @@
     "test": "vitest",
     "test-2": "vitest run",
     "tsc": "tsc",
+    "process-cities": "tsc && node src/process-cities.js && rm src/*.js",
     "mine-countries": "tsc && node src/mine-countries.js && rm src/*.js",
     "mine-GPS": "tsc && node src/mine-GPS.js && rm src/*.js",
     "i18n-1": "tsc && node src/i18n-1.js && rm src/*.js",

@@ -1,3 +1,5 @@
+import { CountryCode, WorldCities } from "./types.js";
+
 export const CITY_NAMES_EN_TO_TR: Record<string, string> = {
   Istanbul: "İstanbul",
   Izmir: "İzmir",
@@ -1123,4 +1125,32 @@ function areSubcityNamesEqual(enString: string, trString: string) {
     if (enChar !== trChar && en2trCharMap[enChar] !== trChar) return false;
   }
   return true;
+}
+
+export function countTurkeyMapPlaces() {
+  let i = 0;
+  for (let state in TurkeyMap) {
+    i += Object.keys(TurkeyMap[state]).length;
+  }
+  console.log("count: ", Object.keys(TurkeyMap).length, i);
+}
+
+export function countInData(data: WorldCities, countryCode: CountryCode) {
+  let i = 0;
+  for (let state in data[countryCode]) {
+    i += Object.keys(data[countryCode][state]).length;
+  }
+
+  console.log("count: ", Object.keys(data[countryCode]).length, i);
+}
+
+export function countWholeData(data: WorldCities) {
+  let i = 0;
+  for (let code in data) {
+    for (let state in data[code]) {
+      i += Object.keys(data[code][state]).length;
+    }
+  }
+
+  console.log("count: ", i);
 }
