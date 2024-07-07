@@ -12,6 +12,7 @@ Run the script `process-dr5hn`
   - get only necessary columns
   - Replace `Hakkâri` with `Hakkari`
   - Replace name `Merkez` with the corresponding state name
+  - Generate entries for the states that does not exist as a name such as İstanbul,Ankara from the average GPS of the it's children
 
 ## Process planet-scale OSM names data 
  This is to enrich the Turkish cities with alternative names and add all other cities of the world.
