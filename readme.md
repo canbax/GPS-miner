@@ -14,13 +14,14 @@ Run the script `process-dr5hn`
   - Replace name `Merkez` with the corresponding state name
   - Generate entries for the states that does not exist as a name such as İstanbul,Ankara from the average GPS of the it's children
 
-## Process planet-scale OSM names data 
- This is to enrich the Turkish cities with alternative names and add all other cities of the world.
+## Process planet-scale OSM names data
 
-- generate filtered_output5.tsv from planet-scale OSM names data using bash script
+This is to enrich the Turkish cities with alternative names and add all other cities of the world.
 
-  - get only cities do not belong to TR
-  - filter out unnecessary columns in the bash script in GPS-miner repo!
+- generate filtered_geonames.tsv from planet-scale OSM names data using bash script
+
+  - get only cities or towns that could be a municipality
+  - filter out unnecessary columns in the bash script
 
 - merge 2 data files and create a singular TSV file which will be simply the database. (Let's name the file as "DB.tsv")
 
