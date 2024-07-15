@@ -2,9 +2,7 @@
 
 ## Generate Turkish cities from dr5hn/countries-states-cities-database
 
-Run the script `process-dr5hn`
-
-### What the script does?
+Run the script `process-dr5hn`. It will do the following steps.
 
 - download cities.csv from [Github](https://github.com/dr5hn/countries-states-cities-database/blob/master/csv/cities.csv) the github repo (countries-states-cities-database) of [dr5hn](https://github.com/dr5hn)
 
@@ -13,8 +11,12 @@ Run the script `process-dr5hn`
   - Replace `Hakkâri` with `Hakkari`
   - Replace name `Merkez` with the corresponding state name
   - Generate entries for the states that does not exist as a name such as İstanbul,Ankara from the average GPS of the it's children
+  - lower case the country code to be consistent with geo names
+  - name the result file as "turkish_cities.csv"
 
 ## Process planet-scale OSM names data
+
+Run the script `process-planet-geonames`. It will do the following steps.
 
 This is to enrich the Turkish cities with alternative names and add all other cities of the world.
 
@@ -22,8 +24,16 @@ This is to enrich the Turkish cities with alternative names and add all other ci
 
   - get only cities or towns that could be a municipality
   - filter out unnecessary columns in the bash script
+  - convert certain names to Turkish alphabet such as "Istanbul" -> "İstanbul"
+  - filter-out all the tr country code names that are not in "turkish_cities.csv"
+
+## Merge TSV and CSV files
+
+Run the Python 3 script `merge-data.py`. It will do the following steps.
 
 - merge 2 data files and create a singular TSV file which will be simply the database. (Let's name the file as "DB.tsv")
+
+## Check and ensure data
 
 - test the DB if it stores all things correctly
 

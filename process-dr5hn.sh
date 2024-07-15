@@ -21,7 +21,7 @@ awk -F',' 'BEGIN {OFS=","}
     NR==1 {next} 
     $7 == "TR" {
         name = $2 == "Merkez" ? $5 : $2
-        print name, $5, $7, $9, $10
+        print name, $5, tolower($7), $9, $10
     }' $FILE | sed 's/Hakkâri/Hakkari/' > $TEMP_FILE
 
 # Generate state-wise summaries if the state name is not present as a city name
@@ -42,7 +42,7 @@ awk -F',' 'BEGIN {OFS=","}
             if (!(s in states)) {
                 avg_lat = lat[s] / count[s]
                 avg_lon = lon[s] / count[s]
-                print s, s, "TR", avg_lat, avg_lon
+                print s, s, "tr", avg_lat, avg_lon
             }
         }
     }
