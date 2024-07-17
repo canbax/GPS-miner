@@ -18,10 +18,8 @@ Eskişehir,Eskişehir,tr,39.6507,30.9278
 Balıkesir,Balıkesir,tr,39.734,27.6658
 Denizli,Denizli,tr,37.7863,29.2327
 İzmir,İzmir,tr,38.4324,27.2027
-Hakkari,Hakkari,tr,37.293,44.1926
 Antalya,Antalya,tr,36.7495,30.864
 Tekirdağ,Tekirdağ,tr,41.0854,27.5323
-Hakkâri,Hakkâri,tr,37.5744,43.7408
 Konya,Konya,tr,37.8871,32.4279
 Trabzon,Trabzon,tr,40.8943,39.7744
 İstanbul,İstanbul,tr,41.051,28.9519
@@ -50,7 +48,7 @@ Besni,Adıyaman,tr,37.69278000,37.86111000
 Çelikhan,Adıyaman,tr,38.02560000,38.23665000
 Gerger,Adıyaman,tr,37.95000000,39.01667000
 Gölbaşı,Adıyaman,tr,37.78361000,37.63667000
-Kâhta,Adıyaman,tr,37.78552000,38.62370000
+Kahta,Adıyaman,tr,37.78552000,38.62370000
 Adıyaman,Adıyaman,tr,37.74454000,38.26801000
 Samsat,Adıyaman,tr,37.58194000,38.47417000
 Sincik,Adıyaman,tr,38.03645000,38.61257000
@@ -351,7 +349,7 @@ Enez,Edirne,tr,40.72472000,26.08250000
 Havsa,Edirne,tr,41.54898000,26.82207000
 İpsala,Edirne,tr,40.92115000,26.38273000
 Keşan,Edirne,tr,40.85583000,26.63028000
-Lâlapaşa,Edirne,tr,41.83951000,26.73561000
+Lalapaşa,Edirne,tr,41.83951000,26.73561000
 Meriç,Edirne,tr,41.19183000,26.42097000
 Edirne,Edirne,tr,41.67719000,26.55597000
 Süloğlu,Edirne,tr,41.77956000,26.92602000
@@ -443,7 +441,7 @@ Gümüşhane,Gümüşhane,tr,40.46843000,39.67441000
 Torul,Gümüşhane,tr,40.55071000,39.28344000
 Çukurca,Hakkari,tr,37.24806000,43.61361000
 Derecik,Hakkari,tr,37.07242300,44.32434800
-Hakkari,Hakkâri,tr,37.57444000,43.74083000
+Hakkari,Hakkari,tr,37.57444000,43.74083000
 Şemdinli,Hakkari,tr,37.30514000,44.57420000
 Yüksekova,Hakkari,tr,37.54627000,44.25827000
 Altınözü,Hatay,tr,36.11244000,36.24488000
@@ -501,7 +499,7 @@ Fatih,İstanbul,tr,41.01746000,28.94053000
 Gaziosmanpaşa,İstanbul,tr,41.07857000,28.89679000
 Güngören,İstanbul,tr,41.01787000,28.87882000
 Kadıköy,İstanbul,tr,40.98229000,29.09032000
-Kâğıthane,İstanbul,tr,41.08319000,28.97826000
+Kağıthane,İstanbul,tr,41.08319000,28.97826000
 Kartal,İstanbul,tr,40.91197000,29.21190000
 Küçükçekmece,İstanbul,tr,41.06947000,28.76983000
 Maltepe,İstanbul,tr,40.95890000,29.17866000

@@ -8,7 +8,7 @@ Run the script `process-dr5hn`. It will do the following steps.
 
   - get only TR cities
   - get only necessary columns
-  - Replace `Hakkâri` with `Hakkari`
+  - Replace `â` with `a`
   - Replace name `Merkez` with the corresponding state name
   - Generate entries for the states that does not exist as a name such as İstanbul,Ankara from the average GPS of the it's children
   - lower case the country code to be consistent with geo names
@@ -37,9 +37,11 @@ Run the Python 3 script `merge-data.py`. It will do the following steps.
 
 - test the DB if it stores all things correctly
 
-  - check all Turkish cities and states
+  - check all Turkish cities and states (run `verify-TR-data.py` script)
   - check some random cities such as "Ulaanbaatar"
   - check number of states and cities in each country
+
+## Prepare searchable data structures
 
 - create an index file from the DB to find an entry in O(1) time
 

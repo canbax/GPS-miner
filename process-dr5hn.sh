@@ -14,7 +14,7 @@ SUMMARY_FILE="temp_summary.csv"
 mkdir -p $OUTPUT_DIR
 
 # Download the CSV file
-curl -L $URL -o $FILE
+# curl -L $URL -o $FILE
 
 # Process the file to filter and replace "Merkez" with state name
 awk -F',' 'BEGIN {OFS=","} 
@@ -22,7 +22,7 @@ awk -F',' 'BEGIN {OFS=","}
     $7 == "TR" {
         name = $2 == "Merkez" ? $5 : $2
         print name, $5, tolower($7), $9, $10
-    }' $FILE | sed 's/Hakkâri/Hakkari/' > $TEMP_FILE
+    }' $FILE | sed 's/â/a/g' > $TEMP_FILE
 
 # Generate state-wise summaries if the state name is not present as a city name
 awk -F',' 'BEGIN {OFS=","}

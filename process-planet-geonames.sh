@@ -65,6 +65,10 @@ BEGIN {
     city_names["Kirklareli"] = "Kırklareli";
     city_names["Mus"] = "Muş";
     city_names["Igdir"] = "Iğdır";
+    city_names["Hakkâri"] = "Hakkari";
+    city_names["Kâhta"] = "Kahta";
+    city_names["Kâğıthane"] = "Kağıthane";
+    city_names["Lâlapaşa"] = "Lalapaşa";
 }
 NR == 1 || (($11 == "" || $11 == "-") && ($3 == "relation" || $3 == "node") && ($7 != "" && $8 != "" && $22 != "") && ($5 == "multiple" || $5 == "place") && ($6 == "state_district" || $6 == "province" || $6 == "city" || $6 == "borough" || $6 == "district" || $6 == "subdistrict" || $6 == "municipality")) {
     if ($16 == "tr" && ($1 in city_names)) {
