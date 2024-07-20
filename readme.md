@@ -31,15 +31,15 @@ This is to enrich the Turkish cities with alternative names and add all other ci
 
 Run the Python 3 script `merge-data.py`. It will do the following steps.
 
-- merge 2 data files and create a singular TSV file which will be simply the database. (Let's name the file as "DB.tsv")
+- merge 3 data files (dr5hn, OSMnames, ip2location) and create a singular TSV file which will be simply the database. (Let's name the file as "DB.tsv")
 
 ## Check and ensure data
 
 - test the DB if it stores all things correctly
 
   - check all Turkish cities and states (run `verify-TR-data.py` script)
-  - check some random cities such as "Ulaanbaatar"
-  - check number of states and cities in each country
+  - check some major cities such as "Ulaanbaatar" (run `verify-major-cities.py` script)
+  - check if all valid GPS-data entries are present correctly (run `verify-gps-data.py` script)
 
 ## Prepare searchable data structures
 
