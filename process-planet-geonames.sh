@@ -5,6 +5,7 @@
 # Since this file is kind a large, the script assumes the file exists in "data" folder. The "data" folder is ignored in git due to its large size.
 
 # Start time
+echo "Planet scale processing ... ~ 4 minutes"
 start_time=$(date +%s)
 
 # Define the paths to your input TSV and the additional CSV file

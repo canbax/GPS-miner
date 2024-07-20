@@ -14,7 +14,8 @@ SUMMARY_FILE="temp_summary.csv"
 mkdir -p $OUTPUT_DIR
 
 # Download the CSV file
-# curl -L $URL -o $FILE
+# if you don't want to download the file, comment out below line
+curl -L $URL -o $FILE
 
 # Process the file to filter and replace "Merkez" with state name
 awk -F',' 'BEGIN {OFS=","} 
@@ -22,7 +23,7 @@ awk -F',' 'BEGIN {OFS=","}
     $7 == "TR" {
         name = $2 == "Merkez" ? $5 : $2
         print name, $5, tolower($7), $9, $10
-    }' $FILE | sed 's/â/a/g' > $TEMP_FILE
+    }' $FILE | sed 's/â/a/g' >$TEMP_FILE
 
 # Generate state-wise summaries if the state name is not present as a city name
 awk -F',' 'BEGIN {OFS=","}
@@ -46,14 +47,14 @@ awk -F',' 'BEGIN {OFS=","}
             }
         }
     }
-' $TEMP_FILE > $SUMMARY_FILE
+' $TEMP_FILE >$SUMMARY_FILE
 
 # Combine the header, summary, and filtered data into the final output file
 {
     echo "name,state_name,country_code,latitude,longitude"
     cat $SUMMARY_FILE
     cat $TEMP_FILE
-} > $OUTPUT_FILE
+} >$OUTPUT_FILE
 
 # Notify the user
 echo "Processing complete. Filtered data saved in '$OUTPUT_FILE'."

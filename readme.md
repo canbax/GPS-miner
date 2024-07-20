@@ -1,5 +1,11 @@
 # GPS Mining Process
 
+run below script for full execution
+
+```
+./process-dr5hn.sh && ./process-planet-geonames.sh && python3 merge-data.py && python3 verify-TR-data.py && python3 verify-major-cities.py && python3 verify-gps-data.py
+```
+
 ## Generate Turkish cities from dr5hn/countries-states-cities-database
 
 Run the script `process-dr5hn`. It will do the following steps.
