@@ -3,7 +3,7 @@
 run below script for full execution
 
 ```
-./process-dr5hn.sh && ./process-planet-geonames.sh && python3 merge-data.py && python3 verify-TR-data.py && python3 verify-major-cities.py && python3 verify-gps-data.py
+./process-dr5hn.sh && ./process-planet-geonames.sh && python3 merge-data.py && python3 verify-TR-data.py && python3 verify-major-cities.py && python3 verify-gps-data.py && node create-index.js
 ```
 
 ## Generate Turkish cities from dr5hn/countries-states-cities-database
@@ -49,7 +49,8 @@ Run the Python 3 script `merge-data.py`. It will do the following steps.
 
 ## Prepare searchable data structures
 
-- create an index file from the DB to find an entry in O(1) time
+- create an index file from the DB to find an entry in O(1) time (run `node create-index.js`)
+- read a line in O(1) time (run `node read-lines.js`)
 
 - create Trie by reading the DB and putting pointers to the DB entry using index file
 
