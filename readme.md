@@ -52,6 +52,8 @@ Run the Python 3 script `merge-data.py`. It will do the following steps.
 - create an index file from the DB to find an entry in O(1) time (run `node create-index.js`)
 - read a line in O(1) time (run `node read-lines.js`)
 
+## Create importable/exportable Trie data structure from TSV (in "irem")
+
 - create Trie by reading the DB and putting pointers to the DB entry using index file
 
   - for each weird character such as: "ç", "ö" ... add also it's English mapping in the Trie structure
