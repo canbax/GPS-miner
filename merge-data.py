@@ -69,7 +69,17 @@ final_df.replace(
 # Drop rows with NaN values in 'name', 'country_code', or 'state_name'
 final_df.dropna(subset=["name", "country_code", "state_name"], inplace=True)
 
+
+# Add a new column for the sorting key (optional)
+final_df['sort_key'] = 1000 * final_df['latitude'] + final_df['longitude']
+
+# Sort the DataFrame
+sorted_df = final_df.sort_values(by='sort_key')
+
+# Drop the sort_key column if you added it
+sorted_df = sorted_df.drop(columns=['sort_key'])
+
 # Save the final dataframe to a TSV file
-final_df.to_csv(output_file, sep="\t", index=False)
+sorted_df.to_csv(output_file, sep="\t", index=False)
 
 print(f"Merge complete. Output saved to {output_file}")

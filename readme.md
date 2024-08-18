@@ -22,22 +22,20 @@ Run the script `process-dr5hn`. It will do the following steps.
 
 ## Process planet-scale OSM names data
 
-Run the script `process-planet-geonames`. It will do the following steps.
-
-This is to enrich the Turkish cities with alternative names and add all other cities of the world.
+Run the script `process-planet-geonames`. It will use the `planet-latest_geonames.tsv.gz` file from https://github.com/OSMNames/OSMNames/releases page. Currently it uses v2.2.0. This script is to enrich the Turkish cities with alternative names and add all other cities of the world with their alternative names.
 
 - generate filtered_geonames.tsv from planet-scale OSM names data using bash script
 
   - get only cities or towns that could be a municipality
   - filter out unnecessary columns in the bash script
   - convert certain names to Turkish alphabet such as "Istanbul" -> "İstanbul"
-  - filter-out all the tr country code names that are not in "turkish_cities.csv"
+  - filter-out all the `tr` country code names that are not in "turkish_cities.csv"
 
 ## Merge TSV and CSV files
 
 Run the Python 3 script `merge-data.py`. It will do the following steps.
 
-- merge 3 data files (dr5hn, OSMnames, ip2location) and create a singular TSV file which will be simply the database. (Let's name the file as "DB.tsv")
+- merge 3 data files (dr5hn, OSMnames, ip2location) and create a singular TSV file which will be simply the database. (Let's name the file as "db.tsv"). The rows will be sorted by 1000 * latitude + longitude
 
 ## Check and ensure data
 
