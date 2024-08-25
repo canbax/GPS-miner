@@ -70,14 +70,40 @@ final_df.replace(
 final_df.dropna(subset=["name", "country_code", "state_name"], inplace=True)
 
 
+def interleave_bits(x: int, y: int) -> int:
+    """Interleave the bits of two integers to produce a Morton code (Z-order curve)."""
+    z = 0
+    for i in range(32):
+        z |= (x & (1 << i)) << i | (y & (1 << i)) << (i + 1)
+    return z
+
+
+def normalize_latitude(latitude: float) -> int:
+    """Normalize latitude from -90 to 90 to a 0-65535 range."""
+    return int(((latitude + 90) / 180) * 0xFFFF)
+
+
+def normalize_longitude(longitude: float) -> int:
+    """Normalize longitude from -180 to 180 to a 0-65535 range."""
+    return int(((longitude + 180) / 360) * 0xFFFF)
+
+
+def calculate_morton_code(latitude: float, longitude: float) -> int:
+    """Calculate the Morton code for a given latitude and longitude."""
+    x = normalize_latitude(latitude)
+    y = normalize_longitude(longitude)
+    return interleave_bits(x, y)
+
+
 # Add a new column for the sorting key (optional)
-final_df['sort_key'] = 1000 * final_df['latitude'] + final_df['longitude']
+final_df["sort_key"] = final_df.apply(lambda row: calculate_morton_code(row['latitude'], row['longitude']), axis=1)
+
 
 # Sort the DataFrame
-sorted_df = final_df.sort_values(by='sort_key')
+sorted_df = final_df.sort_values(by="sort_key")
 
 # Drop the sort_key column if you added it
-sorted_df = sorted_df.drop(columns=['sort_key'])
+sorted_df = sorted_df.drop(columns=["sort_key"])
 
 # Save the final dataframe to a TSV file
 sorted_df.to_csv(output_file, sep="\t", index=False)
