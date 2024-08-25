@@ -100,7 +100,7 @@ final_df["sort_key"] = final_df.apply(lambda row: calculate_morton_code(row['lat
 
 
 # Sort the DataFrame
-sorted_df = final_df.sort_values(by="sort_key")
+sorted_df = final_df.sort_values(by=["country_code", "state_name", "name", "sort_key"])
 
 # Drop the sort_key column if you added it
 sorted_df = sorted_df.drop(columns=["sort_key"])
