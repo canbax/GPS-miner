@@ -5,7 +5,7 @@ import pandas as pd
 csv_file = "generated_data/turkish_cities.csv"
 tsv_file = "generated_data/filtered_geonames.tsv"
 output_file = "generated_data/db.tsv"
-gps_data_file = "gps-data-tsv.tsv"
+gps_data_file = "generated_data/gps-data-tsv.tsv"
 
 # Load the CSV and TSV files
 csv_df = pd.read_csv(csv_file)
@@ -16,6 +16,24 @@ gps_data_df = pd.read_csv(gps_data_file, sep="\t")
 tsv_df.rename(
     columns={"state": "state_name", "lat": "latitude", "lon": "longitude"}, inplace=True
 )
+
+
+# Function to check and print rows with latitude and longitude (0.0, 0.0)
+def check_zero_lat_lon(df, operation_name):
+    zero_lat_lon_df = df[(df["latitude"] == 0.0) & (df["longitude"] == 0.0)]
+    if not zero_lat_lon_df.empty:
+        print(
+            f"After {operation_name}, the following places have (0.0, 0.0) latitude and longitude:"
+        )
+        print(zero_lat_lon_df)
+    else:
+        print(
+            f"No (0.0, 0.0) latitude and longitude places found after {operation_name}."
+        )
+
+
+check_zero_lat_lon(tsv_df, "loading TSV")
+check_zero_lat_lon(gps_data_df, "loading GPS data")
 
 
 def merge_on_name_and_country(df1, df2):
@@ -70,40 +88,9 @@ final_df.replace(
 final_df.dropna(subset=["name", "country_code", "state_name"], inplace=True)
 
 
-def interleave_bits(x: int, y: int) -> int:
-    """Interleave the bits of two integers to produce a Morton code (Z-order curve)."""
-    z = 0
-    for i in range(32):
-        z |= (x & (1 << i)) << i | (y & (1 << i)) << (i + 1)
-    return z
+# Sort the DataFrame to make the file look tidy
+sorted_df = final_df.sort_values(by=["country_code", "state_name", "name"])
 
-
-def normalize_latitude(latitude: float) -> int:
-    """Normalize latitude from -90 to 90 to a 0-65535 range."""
-    return int(((latitude + 90) / 180) * 0xFFFF)
-
-
-def normalize_longitude(longitude: float) -> int:
-    """Normalize longitude from -180 to 180 to a 0-65535 range."""
-    return int(((longitude + 180) / 360) * 0xFFFF)
-
-
-def calculate_morton_code(latitude: float, longitude: float) -> int:
-    """Calculate the Morton code for a given latitude and longitude."""
-    x = normalize_latitude(latitude)
-    y = normalize_longitude(longitude)
-    return interleave_bits(x, y)
-
-
-# Add a new column for the sorting key (optional)
-final_df["sort_key"] = final_df.apply(lambda row: calculate_morton_code(row['latitude'], row['longitude']), axis=1)
-
-
-# Sort the DataFrame
-sorted_df = final_df.sort_values(by=["country_code", "state_name", "name", "sort_key"])
-
-# Drop the sort_key column if you added it
-sorted_df = sorted_df.drop(columns=["sort_key"])
 
 # Save the final dataframe to a TSV file
 sorted_df.to_csv(output_file, sep="\t", index=False)

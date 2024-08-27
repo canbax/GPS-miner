@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 
-gps_data_file = "gps-data-tsv.tsv"
+gps_data_file = "generated_data/gps-data-tsv.tsv"
 output_file = "generated_data/db.tsv"
 
 # Read the TSV files
