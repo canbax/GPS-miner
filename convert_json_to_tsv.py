@@ -35,6 +35,8 @@ def json_to_tsv(json_data, output_file):
 
         writer.writeheader()
         for row in flattened_data:
+            if row["latitude"] == 0 and row["longitude"] == 0:
+                continue
             writer.writerow(row)
 
 

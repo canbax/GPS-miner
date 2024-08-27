@@ -19,7 +19,7 @@ async function generateEnglishData() {
     console.error("could not read file:", err);
   }
 
-  await processDr5hnData(data, GENERATED_FILE, DR5H_DATA_FILE);
+  // await processDr5hnData(data, GENERATED_FILE, DR5H_DATA_FILE);
   await processIP2LocationData(data, GENERATED_FILE, IP2LOCATION_DATA_FILE);
 
   printStatisticsInGeneratedFile(GENERATED_FILE);
