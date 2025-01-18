@@ -35,7 +35,7 @@ Run the script `process-planet-geonames`. It will use the `planet-latest_geoname
 
 Run the Python 3 script `merge-data.py`. It will do the following steps.
 
-- merge 3 data files (dr5hn, OSMnames, ip2location) and create a singular TSV file which will be simply the database. (Let's name the file as "db.tsv"). The rows will be sorted by 1000 \* latitude + longitude
+- merge 3 data files (dr5hn, OSMnames, ip2location) and create a singular TSV file which will be simply the database. (Let's name the file as "db.tsv"). The rows are sorted by "country_code", "state_name", "name" to look tidy and easily detect the duplicates.
 
 ## Check and ensure data
 
